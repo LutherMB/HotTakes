@@ -1,20 +1,28 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const User = require('../models/user');
 
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10)
-    .then(hash => {
-        const user = new User({
-            email: req.body.email,
-            password: hash
-        });
-        user.save()
-        .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
-        .catch(error => res.status(400).json({ error }));
-    })
-    .catch(error => res.status(500).json({ error }));
+    const passwordValidator = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+
+    if (passwordValidator.test(req.body.password)){
+        bcrypt.hash(req.body.password, 10)
+        .then(hash => {
+            const user = new User({
+                email: req.body.email,
+                password: hash
+            });
+            user.save()
+            .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
+            .catch(error => res.status(400).json({ error }));
+        })
+        .catch(error => res.status(500).json({ error }));
+    }
+    else {
+        res.status(406).json({message: "Le mot de passe doit faire une taille de 8 caractères minimum et contenir 1 majuscule + 1 minuscule + 1 chiffre + 1 symbole"});
+    } 
 };
 
 exports.login = (req, res, next) => {
@@ -35,7 +43,7 @@ exports.login = (req, res, next) => {
                             token: jwt.sign(
                                 {userId: user._id},
                                 // clé secrete
-                                "RANDOM_TOKEN_SECRET",
+                                process.env.SECRET_KEY,
                                 {expiresIn: "24h"}
                             )
                         });
