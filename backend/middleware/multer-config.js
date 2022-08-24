@@ -1,4 +1,4 @@
-const multer = require('multer');
+const multer = require('multer'); // Module de téléchargement de fichiers
 
 const MIME_TYPES = {
     'image/jpg': 'jpg',
