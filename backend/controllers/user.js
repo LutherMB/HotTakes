@@ -1,5 +1,5 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt'); // Hash de mdp utilisateur
+const jwt = require('jsonwebtoken'); // Token d'authentification
 require('dotenv').config();
 
 const User = require('../models/user');
@@ -16,12 +16,12 @@ exports.signup = (req, res, next) => {
             });
             user.save()
             .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
-            .catch(error => res.status(400).json({ error }));
+            .catch(error => res.status(400).json({ error })); //
         })
         .catch(error => res.status(500).json({ error }));
     }
     else {
-        res.status(406).json({message: "Le mot de passe doit faire une taille de 8 caractères minimum et contenir 1 majuscule + 1 minuscule + 1 chiffre + 1 symbole"});
+        res.status(400).json({message: "Le mot de passe doit faire une taille de 8 caractères minimum et contenir 1 majuscule + 1 minuscule + 1 chiffre + 1 symbole"});
     } 
 };
 

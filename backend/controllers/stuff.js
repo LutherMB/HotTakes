@@ -1,11 +1,8 @@
-// const { fstat } = require('fs');
 const Sauce = require('../models/sauce');
-const fs = require('fs');
+const fs = require('fs'); // File System
 
 exports.createThing = (req, res, next) => {
     const thingObject = JSON.parse(req.body.sauce);
-    // delete thingObject._id;
-    // delete thingObject._userId;
     const sauce = new Sauce({
       ...thingObject,
       userId: req.auth.userId,
